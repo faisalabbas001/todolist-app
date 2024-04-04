@@ -1,11 +1,12 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 import inquirer from "inquirer";
-import Chalk from "chalk"
-import Choice from "inquirer/lib/objects/choice.js";
-let todolist:string[] = [];
+import chalk from "chalk";
+
+let todolist: string[] = [];
 let condition = true;
-let main=async()=>{
-    while(condition){
+
+let main = async () => {
+    while (condition) {
         let option = await inquirer.prompt([
             {
                 name: "choice",
@@ -14,54 +15,53 @@ let main=async()=>{
                 choices: ["Add Task", "Delete Task", "Update Task", "View Todo-list", "Exit"],
             }
         ]);
-        if(option.choice==="Add Task"){
-            await addtask()
-        }
-        else if(option.choice==="View Todo-list"){
-            await viewTask()
-        }
-        else if(option.choice==="Exit"){
-            condition=false
-        }
-        else if(option.choice==="Delete Task"){
-            await deleteTask()
+        if (option.choice === "Add Task") {
+            await addtask();
+        } else if (option.choice === "View Todo-list") {
+            viewTask();
+        } else if (option.choice === "Exit") {
+            condition = false;
+        } else if (option.choice === "Delete Task") {
+            await deleteTask();
         }
     }
 }
 
-
-//   function to add to task in the list //
-let addtask=async()=>{
-    let newtask=await inquirer.prompt([
+// Function to add task to the list
+let addtask = async () => {
+    let newtask = await inquirer.prompt([
         {
-            name:"task",
-            type:"input",
-            message:"Enter your new Task"
+            name: "task",
+            type: "input",
+            message: "Enter your new Task"
         }
     ]);
     todolist.push(newtask.task);
-    console.log(`\n ${newtask.task} : added succesfully in Todolist-app`)
-}
-//  function to view all the todo list task
-
-let viewTask=()=>{
-  console.log("\n  Your Todolist:\n ");
-  todolist.forEach((item,index)=>{
-    console.log(`${index}:${item}`)
-  })
+    console.log(`\n ${newtask.task} : added successfully to Todolist-app`);
 }
 
-
-// function to delete the todo list task 
-
-let deleteTask= async()=>{
-    await viewTask()
-let taskindex=await inquirer.prompt([{
-    name:"index",
-    type:"number",
-    message:"Enter 'the index no', of the task you want to delete "
-}]);
-let deletedTask=todolist.splice(taskindex.index,1);
- console.log(`\n ${deleteTask} task has been deleted successfully from todo-list`)
+// Function to view all the todo list tasks
+let viewTask = () => {
+    console.log("\n  Your Todolist:\n ");
+    todolist.forEach((item, index) => {
+        console.log(`${index}: ${item}`);
+    });
 }
-main()
+
+// Function to delete a todo list task
+let deleteTask = async () => {
+    await viewTask();
+    let taskindex = await inquirer.prompt([{
+        name: "index",
+        type: "number",
+        message: "Enter the index no of the task you want to delete: "
+    }]);
+    if (taskindex.index >= 0 && taskindex.index < todolist.length) {
+        let deletedTask = todolist.splice(taskindex.index, 1);
+        console.log(`\n ${deletedTask} task has been deleted successfully from todo-list`);
+    } else {
+        console.log(chalk.red("\n Invalid index provided. Please provide a valid index."));
+    }
+}
+
+main();

@@ -1,5 +1,6 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 import inquirer from "inquirer";
+import chalk from "chalk";
 let todolist = [];
 let condition = true;
 let main = async () => {
@@ -16,7 +17,7 @@ let main = async () => {
             await addtask();
         }
         else if (option.choice === "View Todo-list") {
-            await viewTask();
+            viewTask();
         }
         else if (option.choice === "Exit") {
             condition = false;
@@ -26,7 +27,7 @@ let main = async () => {
         }
     }
 };
-//   function to add to task in the list //
+// Function to add task to the list
 let addtask = async () => {
     let newtask = await inquirer.prompt([
         {
@@ -36,24 +37,29 @@ let addtask = async () => {
         }
     ]);
     todolist.push(newtask.task);
-    console.log(`\n ${newtask.task} : added succesfully in Todolist-app`);
+    console.log(`\n ${newtask.task} : added successfully to Todolist-app`);
 };
-//  function to view all the todo list task
+// Function to view all the todo list tasks
 let viewTask = () => {
     console.log("\n  Your Todolist:\n ");
     todolist.forEach((item, index) => {
-        console.log(`${index}:${item}`);
+        console.log(`${index}: ${item}`);
     });
 };
-// function to delete the todo list task 
+// Function to delete a todo list task
 let deleteTask = async () => {
     await viewTask();
     let taskindex = await inquirer.prompt([{
             name: "index",
             type: "number",
-            message: "Enter 'the index no', of the task you want to delete "
+            message: "Enter the index no of the task you want to delete: "
         }]);
-    let deletedTask = todolist.splice(taskindex.index, 1);
-    console.log(`\n ${deleteTask} task has been deleted successfully from todo-list`);
+    if (taskindex.index >= 0 && taskindex.index < todolist.length) {
+        let deletedTask = todolist.splice(taskindex.index, 1);
+        console.log(`\n ${deletedTask} task has been deleted successfully from todo-list`);
+    }
+    else {
+        console.log(chalk.red("\n Invalid index provided. Please provide a valid index."));
+    }
 };
 main();
